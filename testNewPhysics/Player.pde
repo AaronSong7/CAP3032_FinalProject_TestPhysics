@@ -7,6 +7,7 @@ class Player {
   //boolean left = false, right = false;
   boolean moving;
   int keySet;
+  Level lvl1Map = new Level(4);
   
   Player(int xPos, int yPos, int playerKey) {
     px = xPos;
@@ -34,6 +35,10 @@ class Player {
     //  vy -=10;
     //  up = false;
     //}
+    float prevPx, prevPy;
+    prevPx = px;
+    prevPy = py;
+    
     grounded = false;
     ax = 0;
     if((left == true && right == true) || left == false && right == false) {
@@ -50,42 +55,58 @@ class Player {
     vy+=ay;
     px+=vx;
     py+=vy;
-    if( px<10){
-      vx = 0;
-      ax = 0;
-      px = 10;
-    }
-    if( px>390){
-      vx = 0;
-      ax = 0;
-      px = 390;
-    }
-
-    if (py>300 && px>100 && px<300) { 
-      py=300; 
-      vy=0; 
-      ay=0;
-    }
-  
-  // friction
-    if(py == 300 && moving == false) {
-      // immediate slow down
-      vx = 0;
-      grounded = true;
+        
+    // Bottom collision
+    int xblkBotLoc, yblkBotLoc;
+    xblkBotLoc = int(px/25);
+    yblkBotLoc = int(py/25);  
     
-    //  // for gradual slow down
-    //  //vx *= .95;
-    //  //if(abs(vx) < 0.7) {
-    //  //  vx = 0;
-    //  //}
-    
+    if(lvl1Map.lvl4[yblkBotLoc][xblkBotLoc] == 1 && prevPy < py) {
+        py=(yblkBotLoc)*25; 
+        vy=0; 
+        ay=0;
+        grounded = true;
     }
-    if( py>420 ){
-      px = 200;
-      py = -100;
-      ax = 0;
-      vx = 0;
-      vy = 10;
+    
+    // friction
+    if(grounded == true && moving == false) {
+        vx = 0;
+    }
+    
+    // Top collision
+    int xblkTopLoc, yblkTopLoc;
+    xblkTopLoc = int(px/25);
+    yblkTopLoc = int((py-20)/25);
+    println(xblkTopLoc + " " + yblkTopLoc);
+    
+    if(lvl1Map.lvl4[yblkTopLoc][xblkTopLoc] == 1 && prevPy > py) {
+        py=((yblkTopLoc + 1)*25)+20; 
+        vy=0; 
+        ay=0;
+    }
+    
+    // Left collision
+    int xblkLeftLoc, yblkLeftLoc;
+    xblkLeftLoc = int((px-10)/25);
+    yblkLeftLoc = int((py-10)/25);
+    println(xblkLeftLoc + " " + yblkLeftLoc);
+    
+    if(lvl1Map.lvl4[yblkLeftLoc][xblkLeftLoc] == 1 && prevPx > px) {
+        px=((xblkLeftLoc + 1)*25)+10; 
+        vx=0; 
+        ax=0;
+    }
+    
+    // Right collision
+    int xblkRightLoc, yblkRightLoc;
+    xblkRightLoc = int((px+10)/25);
+    yblkRightLoc = int((py-10)/25);
+    println(xblkLeftLoc + " " + yblkLeftLoc);
+    
+    if(lvl1Map.lvl4[yblkRightLoc][xblkRightLoc] == 1 && prevPx < px) {
+        px=((xblkRightLoc)*25)-10; 
+        vx=0; 
+        ax=0;
     }
     render(px, py);
     return grounded;
@@ -101,46 +122,4 @@ class Player {
     rect(px-10, py-20, 20, 20);
     circle(px, py, 5);
   }
-  
-  //void move1() {
-  //  if(keyPressed && key == CODED) {
-  //    if(keyCode == LEFT) {
-  //      //vx -= 10;
-  //      left = true;
-  //    }
-  //    if(keyCode == RIGHT) {
-  //      //vx += 10;
-  //      right = true;
-  //    }
-  //    if(grounded && keyCode == UP) {
-  //      vy -= 10;
-  //    }
-  //  }
-  //}
-  
-  //void move2() {
-  //  if(keyPressed) {
-  //    if(keyCode == 'A') {
-  //      //vx -= 10;
-  //      left = true;
-  //    }
-  //    if(keyCode == 'D') {
-  //      vx += 10;
-  //      right = true;
-  //    }
-  //    if(grounded && keyCode == 'W') {
-  //      vy -= 10;
-  //    }
-  //  }
-  //}
-  
-  //void update() {
-  //  move1();
-  //  if(!grounded) {
-  //    vy += 0.2;
-  //  }
-  //  else {
-  //    vy = 
-  //  }
-  //}
 }
